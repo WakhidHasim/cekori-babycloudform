@@ -15,7 +15,7 @@ class Dashboard extends CI_Controller
             'title' => 'Dashboard',
             'page' => 'pages/admin/dashboard/index',
             'user' => $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array(),
-            'count_products' => $this->m_product->getCountProduct()
+            'count_products' => $this->m_product->countProducts()
         ];
 
         $this->load->view('layouts/admin/app', $data, false);

@@ -1,5 +1,4 @@
 <div class="content">
-    <div class="flash-data" data-flashdata="<?= $this->session->flashdata('success'); ?>"></div>
     <div class="page-inner">
         <div class="page-header">
             <h4 class="page-title">Products</h4>
@@ -22,58 +21,63 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Data Products</h4>
-                        <a href="<?= base_url('product/import') ?>" class="btn btn-warning btn-round ml-auto">
-                            <i class=" fa fa-plus mr-1"></i>
-                            Import Data
-                        </a>
-                        <a href="<?= base_url('product/create') ?>" class="btn btn-primary btn-round ml-3">
+                        <h4 class="card-title">Products Data</h4>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary btn-round ml-auto" onclick="addProduct()">
                             <i class=" fa fa-plus mr-1"></i>
                             Add Data
-                        </a>
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="add-row" class="display table table-striped table-hover">
+                        <table id="table_product" class="display nowrap table table-striped table-hover table-responsive">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Product Code</th>
-                                    <th>Sale Date</th>
-                                    <th style="width: 10%">Action</th>
+                                    <th style="width:5%;">No</th>
+                                    <th style="width:30%;">Product Code</th>
+                                    <th style="width:30%;">Sale Date</th>
+                                    <th style="width: 15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $no = 1;
-                                foreach ($products as $product) { ?>
-                                    <tr>
-                                        <td>
-                                            <?= $no++ ?>
-                                        </td>
-                                        <td>
-                                            <?= $product['kode_bcf'] ?>
-                                        </td>
-                                        <td>
-                                            <?= formatDateIndo(date($product['tgl_jual'])) ?>
-                                        </td>
-                                        <td>
-                                            <div class="form-button-action">
-                                                <a href="<?= base_url('product/edit/') . $product['kode_bcf'] ?>" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Product">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <a href="<?= base_url('product/delete/') . $product['kode_bcf'] ?>" data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-delete" data-original-title="Delete Product" product="DELETE">
-                                                    <i class="fa fa-trash-alt"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
+
                             </tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Modal Titel</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="formData">
+                    <div class="form-group">
+                        <label for="kode_bcf">Product Code</label>
+                        <input type="text" class="form-control <?= form_error('kode_bcf') ? 'is-invalid' : ''; ?>" id="kode_bcf" name="kode_bcf" onkeyup="this.value = this.value.toUpperCase()" aria-describedby="kode_bcf" value="<?= set_value('kode_bcf') ?>" placeholder="Input Product Code">
+                        <?= form_error('kode_bcf', '<div class="invalid-feedback">', '</div>'); ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="tgl_jual">Sale Date</label>
+                        <input type="date" class="form-control <?= form_error('tgl_jual') ? 'is-invalid' : ''; ?>" id="tgl_jual" name="tgl_jual" aria-describedby="tgl_jual" value="<?= set_value('tgl_jual') ?>">
+                        <?= form_error('tgl_jual', '<div class="invalid-feedback">', '</div>'); ?>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnSave" onclick="save()">Save</button>
             </div>
         </div>
     </div>
