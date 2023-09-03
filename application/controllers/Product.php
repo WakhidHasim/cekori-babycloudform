@@ -28,20 +28,22 @@ class Product extends CI_Controller
         $no = $_POST['start'];
 
         foreach ($results as $result) {
-            $row = [];
-            $row['No'] = ++$no;
-            $row['Kode'] = $result->kode_bcf;
-            $row['Tanggal'] = $result->tgl_jual;
-            $row['Action'] = '<a href="#" class="text-success mr-4" onclick="edit(' . "'" . $result->kode_bcf . "','edit'" . ')"title="Edit" data-toggle="tooltip"><i class="fas fa-edit"></i></a>';
+            $row = array();
+            $row[] = ++$no;
+            $row[] = $result->kode_bcf;
+            $row[] = $result->tgl_jual;
+            $row[] = '
+                <a href="#" class="btn btn-success btn-sm" onclick="getId(' . "'" . $result->kode_bcf . "','edit'" . ')"> Edit </a>
+            ';
             $data[] = $row;
         }
 
-        $output = [
-            "draw" =>  intval($_POST["draw"]),
+        $output = array(
+            "draw" => $_POST['draw'],
             "recordsTotal" => $this->m_product->countAllData(),
             "recordsFiltered" => $this->m_product->countFilteredData(),
             "data" => $data
-        ];
+        );
 
         $this->output->set_content_type('application/json')->set_output(json_encode($output));
     }
@@ -62,9 +64,9 @@ class Product extends CI_Controller
         $this->output->set_content_type('application/json')->set_output(json_encode($message));
     }
 
-    public function byId($kode_bcf)
+    public function getId($kode_bcf)
     {
-        $data = $this->m_product->getDataById($kode_bcf);
+        $data = $this->m_product->getProductById($kode_bcf);
 
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
@@ -76,7 +78,9 @@ class Product extends CI_Controller
             "tgl_jual" => $this->input->post('tgl_jual', true)
         ];
 
-        if ($this->m_product->editProduct(['kode_bcf' => $this->input->post('kode_bcf')], $data) > 0) {
+        $kode_bcf = $this->input->post('kode_bcf', true);
+
+        if ($this->m_product->editProduct(['kode_bcf' => $kode_bcf], $data)) {
             $message['status'] = 'success';
         } else {
             $message['status'] = 'failed';

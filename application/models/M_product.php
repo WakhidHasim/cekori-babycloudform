@@ -3,8 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class M_product extends CI_Model
 {
     var $table = 'product';
-    var $column_order = ['kode_bcf', 'tgl_jual'];
-    var $order = ['kode_bcf', 'tgl_jual'];
+    var $order = array('kode_bcf', 'tgl_jual');
     public function countProducts()
     {
         return $this->db->get($this->table)->num_rows();
@@ -58,7 +57,7 @@ class M_product extends CI_Model
         return $this->db->affected_rows();
     }
 
-    public function getDataById($kode_bcf)
+    public function getProductById($kode_bcf)
     {
         return $this->db->get_where($this->table, ['kode_bcf' => $kode_bcf])->row();
     }

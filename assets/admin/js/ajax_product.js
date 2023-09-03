@@ -1,5 +1,5 @@
-let typeData;
-let modal = $("#modalData");
+let typeData = "add";
+let modalData = $("#modalData");
 let tableProduct = $("#table_product");
 let formData = $("#formData");
 let modalTitle = $("#modalTitle");
@@ -9,17 +9,12 @@ $(document).ready(function () {
     tableProduct.DataTable({
         processing: true,
         serverSide: true,
-        order: [[1, "desc"]],
+        ordering: false,
+        order: [],
         ajax: {
             url: "product/getProducts",
             type: "POST",
         },
-        columns: [
-            { data: "No", orderable: false },
-            { data: "Kode", orderable: false },
-            { data: "Tanggal", orderable: false },
-            { data: "Action", orderable: false },
-        ],
         columnDefs: [
             {
                 targets: [-1],
@@ -29,62 +24,84 @@ $(document).ready(function () {
     });
 });
 
+function reloadPage() {
+    tableProduct.DataTable().ajax.reload();
+}
+
 function addProduct() {
     typeData = "add";
     formData[0].reset();
-    modal.modal("show");
+    modalData.modal("show");
     modalTitle.text("Add Product");
+    btnSave.text("Add Product");
+    btnSave.prop("disabled", false);
 }
 
-function save() {
-    btnSave.text("Please wait...");
+function saveData() {
     btnSave.attr("disabled", true);
+    btnSave.text("Please wait...");
 
-    if (typeData == "add") {
+    let url;
+    let data = formData.serialize();
+
+    if (typeData === "add") {
         url = "product/addProduct";
     } else {
         url = "product/editProduct";
+        data += "&kode_bcf=" + $("#hidden_kode_bcf").val();
     }
 
     $.ajax({
         type: "POST",
         url: url,
-        data: formData.serialize(),
+        data: data,
         dataType: "JSON",
-        success: function (response) {
-            if (response.status === "success") {
-                modal.modal("hide");
-
-                tableProduct.DataTable().ajax.reload(function () {
-                    tableProduct.DataTable().order([1, "desc"]).draw();
-
-                    formData[0].reset();
-                    btnSave.text("Save");
-                    btnSave.attr("disabled", false);
-                }, false);
+        success: function (res) {
+            if (res.status === "success") {
+                modalData.modal("hide");
+                reloadPage();
             }
+
+            if (typeData === "add") {
+                btnSave.text("Add Product");
+            } else if (typeData === "edit") {
+                btnSave.text("Edit Product");
+            }
+            btnSave.prop("disabled", false);
+            btnSave.removeAttr("data-type");
         },
-        error: function () {
-            console.log("error database");
+        error: function (xhr, status, error) {
+            console.log(xhr.responseText);
+            if (typeData === "add") {
+                btnSave.text("Add Product");
+            } else if (typeData === "edit") {
+                btnSave.text("Edit Product");
+            }
+            btnSave.prop("disabled", false);
+            btnSave.removeAttr("data-type");
         },
     });
 }
 
-function edit(id, type) {
-    typeData = "edit";
+function getId(kode_bcf, type) {
+    if (type === "edit") {
+        typeData = "edit";
+        formData[0].reset();
+        btnSave.text("Edit Product");
+        btnSave.attr("data-type", "edit");
+        btnSave.prop("disabled", false);
+        saveData(kode_bcf);
+    }
 
     $.ajax({
         type: "GET",
-        url: "product/byId/" + id,
+        url: "product/getId/" + kode_bcf,
         dataType: "JSON",
-        success: function (response) {
-            formData[0].reset();
+        success: function (res) {
             modalTitle.text("Edit Product");
-            btnSave.text("Edit");
-            btnSave.attr("disabled", false);
-            $("#kode_bcf").val(response.kode_bcf);
-            $("#tgl_jual").val(response.tgl_jual);
-            modal.modal("show");
+            $('[name="kode_bcf"]').val(res.kode_bcf);
+            $('[name="tgl_jual"]').val(res.tgl_jual);
+            modalData.modal("show");
         },
     });
 }
