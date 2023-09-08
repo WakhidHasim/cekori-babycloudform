@@ -23,7 +23,11 @@
                     <div class="d-flex align-items-center">
                         <h4 class="card-title">Products Data</h4>
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary btn-round ml-auto" onclick="addProduct()">
+                        <button type="button" class="btn btn-warning btn-round ml-auto" id="importBtn" onclick="importCSV()">
+                            <i class=" fa fa-plus mr-1"></i>
+                            Import CSV
+                        </button>
+                        <button type="button" class="btn btn-primary btn-round ml-3" onclick="addProduct()">
                             <i class=" fa fa-plus mr-1"></i>
                             Add Data
                         </button>
@@ -37,7 +41,6 @@
                                     <th style="width:5%;">No</th>
                                     <th style="width:30%;">Product Code</th>
                                     <th style="width:30%;">Sale Date</th>
-                                    <th style="width:30%;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -63,20 +66,51 @@
             </div>
             <div class="modal-body">
                 <form action="#" id="formData">
-                    <input type="hidden" id="hidden_kode_bcf" name="kode_bcf" value="">
                     <div class="form-group">
                         <label for="kode_bcf">Product Code</label>
                         <input type="text" class="form-control" id="kode_bcf" name="kode_bcf" onkeyup="this.value = this.value.toUpperCase()" aria-describedby="kode_bcf" value="<?= set_value('kode_bcf') ?>" placeholder="Input Product Code">
+                        <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="tgl_jual">Sale Date</label>
                         <input type="date" class="form-control" id="tgl_jual" name="tgl_jual" aria-describedby="tgl_jual" value="<?= set_value('tgl_jual') ?>">
+                        <div class="invalid-feedback"></div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-success" id="btnSave" onclick="saveData()">Add Product</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal SCV -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Import File CSV</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="importForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="csv_file">File CSV</label>
+                        <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv">
+                    </div>
+                    <!-- Progress bar -->
+                    <div class="progress" style="display: none;">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnImport" onclick="uploadCSV()">Import</button>
             </div>
         </div>
     </div>

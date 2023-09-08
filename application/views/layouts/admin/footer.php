@@ -30,6 +30,9 @@
 <!-- Ajax Product -->
 <script src="<?= base_url() ?>assets/admin/js/ajax_product.js"></script>
 
+<!-- Import CSV -->
+<script src="<?= base_url() ?>assets/admin/js/import.js"></script>
+
 </body>
 
 </html>

@@ -3,13 +3,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class M_product extends CI_Model
 {
     var $table = 'product';
-    var $order = array('kode_bcf', 'tgl_jual');
-    public function countProducts()
-    {
-        return $this->db->get($this->table)->num_rows();
-    }
+    var $order = ['kode_bcf', 'tgl_jual'];
 
-    private function _getDataQuery()
+    private function _getProductsQuery()
     {
         $this->db->from($this->table);
 
@@ -18,16 +14,11 @@ class M_product extends CI_Model
             $this->db->or_like('tgl_jual', $_POST['search']['value']);
         }
 
-        if (isset($_POST['order'])) {
-            $this->db->order_by($this->order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-        } else {
-            $this->db->order_by('kode_bcf', 'DESC');
-        }
+        $this->db->order_by('kode_bcf', 'desc');
     }
-
     public function getProducts()
     {
-        $this->_getDataQuery();
+        $this->_getProductsQuery();
 
         if ($_POST['length'] !== -1) {
             $this->db->limit($_POST['length'], $_POST['start']);
@@ -37,10 +28,10 @@ class M_product extends CI_Model
         return $query->result();
     }
 
-
     public function countFilteredData()
     {
-        $this->_getDataQuery();
+        $this->_getProductsQuery();
+
         $query = $this->db->get();
         return $query->num_rows();
     }
@@ -57,14 +48,25 @@ class M_product extends CI_Model
         return $this->db->affected_rows();
     }
 
-    public function getProductById($kode_bcf)
+    public function importCSV($file_path)
     {
-        return $this->db->get_where($this->table, ['kode_bcf' => $kode_bcf])->row();
-    }
+        $delimiter = ',';
+        $enclosure = '"';
+        $escape = '\\';
 
-    public function editProduct($where, $data)
-    {
-        $this->db->update($this->table, $data, $where);
-        return $this->db->affected_rows();
+        if (($handle = fopen($file_path, 'r')) !== FALSE) {
+            while (($row = fgetcsv($handle, 10000, $delimiter, $enclosure, $escape)) !== FALSE) {
+                $data = array(
+                    'kode_bcf' => $row[0],
+                    'tgl_jual' => date('Y-m-d', strtotime($row[1]))
+                );
+
+                $this->db->insert($this->table, $data);
+            }
+            fclose($handle);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -1,4 +1,3 @@
-let typeData = "add";
 let modalData = $("#modalData");
 let tableProduct = $("#table_product");
 let formData = $("#formData");
@@ -9,99 +8,77 @@ $(document).ready(function () {
     tableProduct.DataTable({
         processing: true,
         serverSide: true,
-        ordering: false,
         order: [],
+        ordering: false,
         ajax: {
             url: "product/getProducts",
             type: "POST",
         },
         columnDefs: [
             {
-                targets: [-1],
+                target: [-1],
                 orderable: false,
             },
         ],
     });
 });
 
-function reloadPage() {
-    tableProduct.DataTable().ajax.reload();
+function notification(type, text) {
+    $.notify(
+        {
+            icon: "flaticon-alarm-1",
+            title: "Baby CloudFoam",
+            message: text,
+        },
+        {
+            type: type,
+            placement: {
+                from: "top",
+                align: "right",
+            },
+            time: 500,
+        }
+    );
 }
 
 function addProduct() {
-    typeData = "add";
     formData[0].reset();
     modalData.modal("show");
     modalTitle.text("Add Product");
-    btnSave.text("Add Product");
-    btnSave.prop("disabled", false);
 }
 
 function saveData() {
-    btnSave.attr("disabled", true);
     btnSave.text("Please wait...");
-
-    let url;
-    let data = formData.serialize();
-
-    if (typeData === "add") {
-        url = "product/addProduct";
-    } else {
-        url = "product/editProduct";
-        data += "&kode_bcf=" + $("#hidden_kode_bcf").val();
-    }
+    btnSave.attr("disabled", true);
 
     $.ajax({
         type: "POST",
-        url: url,
-        data: data,
+        url: "product/addProduct",
+        data: formData.serialize(),
         dataType: "JSON",
         success: function (res) {
+            formData.find(".is-invalid").removeClass("is-invalid");
+            formData.find(".invalid-feedback").text("");
+
             if (res.status === "success") {
                 modalData.modal("hide");
-                reloadPage();
+                tableProduct.DataTable().ajax.reload();
+                notification("success", "Product Data Added Successfully!");
+            } else {
+                for (let i = 0; i < res.input_error.length; i++) {
+                    $('[name="' + res.input_error[i] + '"]').addClass(
+                        "is-invalid"
+                    );
+                    $('[name="' + res.input_error[i] + '"]')
+                        .next()
+                        .text(res.error_string[i]);
+                }
             }
-
-            if (typeData === "add") {
-                btnSave.text("Add Product");
-            } else if (typeData === "edit") {
-                btnSave.text("Edit Product");
-            }
-            btnSave.prop("disabled", false);
-            btnSave.removeAttr("data-type");
+            btnSave.text("Add Product");
+            btnSave.attr("disabled", false);
         },
         error: function (xhr, status, error) {
-            console.log(xhr.responseText);
-            if (typeData === "add") {
-                btnSave.text("Add Product");
-            } else if (typeData === "edit") {
-                btnSave.text("Edit Product");
-            }
-            btnSave.prop("disabled", false);
-            btnSave.removeAttr("data-type");
-        },
-    });
-}
-
-function getId(kode_bcf, type) {
-    if (type === "edit") {
-        typeData = "edit";
-        formData[0].reset();
-        btnSave.text("Edit Product");
-        btnSave.attr("data-type", "edit");
-        btnSave.prop("disabled", false);
-        saveData(kode_bcf);
-    }
-
-    $.ajax({
-        type: "GET",
-        url: "product/getId/" + kode_bcf,
-        dataType: "JSON",
-        success: function (res) {
-            modalTitle.text("Edit Product");
-            $('[name="kode_bcf"]').val(res.kode_bcf);
-            $('[name="tgl_jual"]').val(res.tgl_jual);
-            modalData.modal("show");
+            console.log("Error: " + error);
         },
     });
 }
