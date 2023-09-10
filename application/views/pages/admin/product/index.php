@@ -23,7 +23,11 @@
                     <div class="d-flex align-items-center">
                         <h4 class="card-title">Products Data</h4>
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-warning btn-round ml-auto" id="importBtn" onclick="importCSV()">
+                        <button type="button" class="btn btn-success btn-round ml-auto" id="btnImport" onclick="importExcel()">
+                            <i class=" fa fa-plus mr-1"></i>
+                            Import XLSX
+                        </button>
+                        <button type="button" class="btn btn-warning btn-round ml-3" id="importBtn" onclick="importCSV()">
                             <i class=" fa fa-plus mr-1"></i>
                             Import CSV
                         </button>
@@ -86,7 +90,7 @@
     </div>
 </div>
 
-<!-- Modal SCV -->
+<!-- Modal CSV -->
 <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -111,6 +115,36 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-success" id="btnImport" onclick="uploadCSV()">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Excel -->
+<div class="modal fade" id="modalImport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Import File Excel</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="importForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="csv_file">File Excel (.xlsx)</label>
+                        <input type="file" class="form-control" id="excel_file" name="excel_file" accept=".xls, .xlsx">
+                    </div>
+                    <!-- Progress bar -->
+                    <div class="progress" style="display: none;">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnImport" onclick="uploadExcel()">Import</button>
             </div>
         </div>
     </div>

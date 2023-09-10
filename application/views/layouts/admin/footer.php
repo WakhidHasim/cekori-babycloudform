@@ -33,6 +33,54 @@
 <!-- Import CSV -->
 <script src="<?= base_url() ?>assets/admin/js/import.js"></script>
 
+<script>
+    const flashData = $('.flash-data').data('flashdata');
+    const errorFlashData = $('.error-flashdata').data('flashdata');
+
+    if (flashData) {
+        notification('success', flashData);
+    }
+
+    if (errorFlashData) {
+        notification('danger', errorFlashData);
+    }
+
+    function notification(type, text) {
+        $.notify({
+            icon: "flaticon-alarm-1",
+            title: "Baby CloudFoam",
+            message: text,
+        }, {
+            type: type,
+            placement: {
+                from: "top",
+                align: "right",
+            },
+            time: 1000,
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const togglePasswordButtons = document.querySelectorAll(".toggle-password");
+
+        togglePasswordButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                const targetId = button.getAttribute("data-target");
+                const passwordInput = document.getElementById(targetId);
+
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    button.innerHTML = '<i class="fa fa-eye"></i>';
+                } else {
+                    passwordInput.type = "password";
+                    button.innerHTML = '<i class="fa fa-eye-slash"></i>';
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 
 </html>

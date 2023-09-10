@@ -21,7 +21,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="<?= base_url('profile/edit') ?>">
+                            <a href="<?= base_url('profile/edit-profile') ?>">
                                 <span class="link-collapse">Edit Profile</span>
                             </a>
                         </li>

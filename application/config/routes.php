@@ -61,3 +61,6 @@ $route['logout'] = 'auth/logout';
 // Admin
 $route['dashboard'] = 'dashboard';
 $route['product'] = 'product';
+$route['profile'] = 'profile';
+$route['profile/edit-profile'] = 'profile/editProfile';
+$route['profile/change-password'] = 'profile/changePassword';

@@ -1,5 +1,6 @@
 <div class="content">
     <div class="flash-data" data-flashdata="<?= $this->session->flashdata('success'); ?>"></div>
+
     <div class="page-inner">
         <div class="page-header">
             <h4 class="page-title">My Profile</h4>
@@ -38,8 +39,8 @@
                         </table>
                     </div>
                     <div class="float-right">
-                        <a href="<?= base_url('admin/profile/edit') ?>" class="btn btn-success"><i class="fa fa-edit"></i> Edit Profile</a>
-                        <a href="<?= base_url('admin/profile/change_password') ?>" class="btn btn-warning px-3">Change Password</a>
+                        <a href="<?= base_url('profile/edit-profile') ?>" class="btn btn-success"><i class="fa fa-edit"></i> Edit Profile</a>
+                        <a href="<?= base_url('profile/change-password') ?>" class="btn btn-warning px-3">Change Password</a>
                     </div>
                 </div>
             </div>

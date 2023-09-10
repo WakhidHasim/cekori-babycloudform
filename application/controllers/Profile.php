@@ -47,6 +47,10 @@ class Profile extends CI_Controller
             ];
 
             $this->m_auth->editDataUser($id_user, $data);
+
+            $new_email = $this->input->post('email');
+            $this->session->set_userdata('email', $new_email);
+
             $this->session->set_flashdata('success', 'Profile Successfully Edited!');
             redirect('profile');
         }
@@ -66,8 +70,7 @@ class Profile extends CI_Controller
                 'title' => 'Change Password',
                 'page' => 'pages/admin/profile/change_password',
                 'user' => $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array(),
-                'profile' => $this->m_auth->getProfile($id_user),
-                'notif_orders' => $this->m_transaction->getNotifOrder()
+                'profile' => $this->m_auth->getProfile($id_user)
             ];
 
             $this->load->view('layouts/admin/app', $data, false);
@@ -79,11 +82,11 @@ class Profile extends CI_Controller
 
             if (!password_verify($current_password, $user['password'])) {
                 $this->session->set_flashdata('error', 'The currend password you entered is incorrect!');
-                redirect('profile/change_password');
+                redirect('profile/change-password');
             } else {
                 if ($current_password == $new_password) {
                     $this->session->set_flashdata('error', 'The new password must not be the same as the old password!');
-                    redirect('profile/change_password');
+                    redirect('profile/change-password');
                 } else {
                     $email = $this->session->userdata('email');
                     $password_hash = password_hash($new_password, PASSWORD_DEFAULT);

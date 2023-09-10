@@ -56,12 +56,16 @@ class M_product extends CI_Model
 
         if (($handle = fopen($file_path, 'r')) !== FALSE) {
             while (($row = fgetcsv($handle, 10000, $delimiter, $enclosure, $escape)) !== FALSE) {
-                $data = array(
-                    'kode_bcf' => $row[0],
-                    'tgl_jual' => date('Y-m-d', strtotime($row[1]))
-                );
+                if (count($row) >= 2) {
+                    $data = array(
+                        'kode_bcf' => $row[0],
+                        'tgl_jual' => date('Y-m-d', strtotime($row[1]))
+                    );
 
-                $this->db->insert($this->table, $data);
+                    $this->db->insert($this->table, $data);
+                } else {
+                    return false;
+                }
             }
             fclose($handle);
             return true;
