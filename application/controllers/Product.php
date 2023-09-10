@@ -103,14 +103,39 @@ class Product extends CI_Controller
             $file_data = $this->upload->data();
             $file_path = './assets/file_csv/' . $file_data['file_name'];
 
-            $import_result = $this->m_product->importCSV($file_path);
+            if (($handle = fopen($file_path, 'r')) !== FALSE) {
+                while (($row = fgetcsv($handle, 10000, ',')) !== FALSE) {
+                    if (count($row) >= 2) {
+                        $kode_bcf = $row[0];
+                        $tgl_jual = date('Y-m-d', strtotime($row[1]));
 
-            if ($import_result !== false) {
+                        if (!$this->isUniqueKodeBcf($kode_bcf)) {
+                            $output['status'] = 'danger';
+                            $output['message'] = 'BCF Code is available!';
+                            $this->output->set_content_type('application/json')->set_output(json_encode($output));
+                            return;
+                        }
+
+                        $data = array(
+                            'kode_bcf' => $kode_bcf,
+                            'tgl_jual' => $tgl_jual
+                        );
+
+                        $this->db->insert('product', $data);
+                    } else {
+                        $output['status'] = 'danger';
+                        $output['message'] = 'Invalid CSV format.';
+                        $this->output->set_content_type('application/json')->set_output(json_encode($output));
+                        return;
+                    }
+                }
+                fclose($handle);
+
                 $output['status'] = 'success';
                 $output['message'] = 'CSV data imported successfully.';
             } else {
                 $output['status'] = 'danger';
-                $output['message'] = 'Failed to import CSV data. Invalid CSV format.';
+                $output['message'] = 'Failed to open CSV file.';
             }
 
             unlink($file_path);
@@ -140,14 +165,19 @@ class Product extends CI_Controller
             $worksheet = $objPHPExcel->getActiveSheet();
             $rows = $worksheet->toArray();
 
-            unset($rows[0]);
             $import_data = array();
 
             foreach ($rows as $row) {
                 $kode_bcf = $row[0];
                 $tgl_jual = $row[1];
 
-                // Validasi Kolom 'kode_bcf' (Pastikan unik)
+                if (empty($kode_bcf) || empty($tgl_jual)) {
+                    $output['status'] = 'danger';
+                    $output['message'] = 'Excel data failed to import. Invalid column format (empty columns).';
+                    $this->output->set_content_type('application/json')->set_output(json_encode($output));
+                    return;
+                }
+
                 if (!$this->isUniqueKodeBcf($kode_bcf)) {
                     $output['status'] = 'danger';
                     $output['message'] = 'BCF Code is available!';
@@ -155,7 +185,6 @@ class Product extends CI_Controller
                     return;
                 }
 
-                // Validasi Kolom 'tgl_jual' (Pastikan tanggal yang valid)
                 if (!strtotime($tgl_jual)) {
                     $output['status'] = 'danger';
                     $output['message'] = 'Invalid date format';
@@ -186,7 +215,6 @@ class Product extends CI_Controller
 
     private function isUniqueKodeBcf($kode_bcf)
     {
-        // Pastikan kode_bcf adalah unik dalam tabel product.
         $query = $this->db->get_where('product', array('kode_bcf' => $kode_bcf));
         return $query->num_rows() == 0;
     }
