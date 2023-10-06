@@ -54,17 +54,12 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // Auth
-$route['login'] = 'Auth';
-$route['register'] = 'Auth/register';
-$route['logout'] = 'Auth/logout';
+$route['login'] = 'auth';
+$route['logout'] = 'auth/logout';
 
 // Admin
-$route['dashboard'] = 'admin/Dashboard';
-$route['product'] = 'admin/Product';
-$route['product/create'] = 'admin/Product/addProduct';
-$route['product/edit/(:any)'] = 'admin/Product/editProduct/$1';
-$route['product/delete/(:any)'] = 'admin/Product/deleteProduct/$1';
-$route['product/import'] = 'admin/Product/import';
-$route['product/import/add'] = 'admin/Product/importProducts';
-$route['profile'] = 'admin/Profile';
-$route['profile/edit'] = 'admin/Profile/editProfile';
+$route['dashboard'] = 'dashboard';
+$route['product'] = 'product';
+$route['profile'] = 'profile';
+$route['profile/edit-profile'] = 'profile/editProfile';
+$route['profile/change-password'] = 'profile/changePassword';

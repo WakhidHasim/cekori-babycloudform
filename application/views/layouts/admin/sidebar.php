@@ -3,7 +3,7 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="user">
             <div class="avatar-sm float-left mr-2">
-                <img src="<?= base_url() ?>assets/admin/img/profile.jpg" alt="..." class="avatar-img rounded-circle">
+                <img src="<?= base_url() ?>assets/assets/img/logo.png" alt="..." class="avatar-img" width="125px">
             </div>
             <div class="info">
                 <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
@@ -21,7 +21,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="<?= base_url('profile/edit') ?>">
+                            <a href="<?= base_url('profile/edit-profile') ?>">
                                 <span class="link-collapse">Edit Profile</span>
                             </a>
                         </li>
